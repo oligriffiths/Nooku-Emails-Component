@@ -3,13 +3,13 @@
 namespace Nooku\Component\Emails;
 
 use Nooku\Library;
-use Nooku\Library\ViewTemplate;
 
-class ViewHtml extends Library\ViewHtml
+class ViewText extends Library\ViewHtml
 {
     protected function _initialize(Library\ObjectConfig $config)
     {
         $config->append(array(
+            'mimetype'         => 'text/plain',
             'template_filters' => array('variable')
         ));
 

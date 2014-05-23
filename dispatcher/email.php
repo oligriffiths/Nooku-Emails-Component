@@ -17,10 +17,21 @@ class DispatcherEmail extends Library\DispatcherAbstract
      */
     protected function _initialize(ObjectConfig $config)
     {
+        $app = $this->getObject('application');
+
         $config->append(array(
             'template' => 'default',
             'email' => 'default',
-            'content' => null
+            'content' => null,
+            'from_email' => $app->getCfg('mailfrom'),
+            'from_name' => $app->getCfg('mailname'),
+            'mailer' => $app->getCfg('mailer'),
+            'sendmail' => $app->getCfg('sendmail'),
+            'smtp_auth' => $app->getCfg('smtpauth'),
+            'smtp_user' => $app->getCfg('smtpuser'),
+            'smtp_pass' => $app->getCfg('smtppass'),
+            'smtp_host' => $app->getCfg('smtphost'),
+            'smtp_port' => $app->getCfg('smtpport'),
         ));
 
         parent::_initialize($config);
@@ -40,7 +51,7 @@ class DispatcherEmail extends Library\DispatcherAbstract
         $request_data = $context->getRequest()->getData();
 
         //Validate from email
-        if(!$from_email = $request_data->from_email){
+        if(!$from_email = $request_data->get('from_email', 'email', $this->getConfig()->from_email)){
             throw new \InvalidArgumentException('No from email address supplied');
         }
 
@@ -65,8 +76,63 @@ class DispatcherEmail extends Library\DispatcherAbstract
         }
 
         //Get to/from names
-        $from_name = $request_data->from_name ?: $from_email;
+        $from_name = $request_data->get('from_name','string',$this->getConfig()->from_name) ?: $from_email;
         $to_name = $request_data->recipient_name ?: $to_email;
+
+        //Store the template in the context for use outside this action
+        $context->getRequest()->setFormat('text');
+        $context->text = $this->compile($context);
+
+        $context->getRequest()->setFormat('html');
+        $context->html = $this->compile($context);
+
+        // Create the Transport
+        switch($this->getConfig()->mailer)
+        {
+            case 'smtp':
+                $transport = \Swift_MailTransport::newInstance($this->getConfig()->smtp_host, $this->getConfig()->smtp_port)
+                ->setUsername($this->getConfig()->smtp_user)
+                ->setPassword($this->getConfig()->smtp_pass);
+                break;
+
+            case 'sendmail':
+                $transport = \Swift_MailTransport::newInstance($this->getConfig()->sendmail);
+                break;
+
+            case 'mail':
+            default:
+                $transport = \Swift_MailTransport::newInstance();
+                break;
+        }
+
+        // Create the Mailer using your created Transport
+        $mailer = \Swift_Mailer::newInstance($transport);
+
+        // Create a message
+        $message = \Swift_Message::newInstance($subject)
+            ->setFrom(array($from_email => $from_name))
+            ->setTo(array($to_email => $to_name))
+            ->setBody($context->text)
+            ->addPart($context->html, 'text/html');
+
+        // Send the message
+        return $mailer->send($message);
+    }
+
+
+    /**
+     * Compiles the email & merges in merge data
+     *
+     * @param Library\ControllerContextInterface $context
+     * @return mixed
+     */
+    protected function _actionCompile(Library\ControllerContextInterface $context)
+    {
+        //Fetch request data
+        $request_data = $context->getRequest()->getData();
+
+        //Get the format
+        $format = $context->getRequest()->getFormat();
 
         //Merge the request data so it's available to the view
         $context->param->append($request_data->toArray());
@@ -77,25 +143,10 @@ class DispatcherEmail extends Library\DispatcherAbstract
         $identifier['name'] = 'email';
 
         //Render the email view
-        $context->param->email_content = $this->getObject($identifier)->layout($this->getConfig()->email)->render($context);
+        $context->param->email_content = $this->getConfig()->content ?: $this->getObject($identifier)->layout($this->getConfig()->email)->format($format)->render($context);
 
         //Render the template view
         $identifier['name'] = 'template';
-        $template = $this->getObject($identifier)->layout($this->getConfig()->template)->render($context);
-
-        // Create the Transport
-        $transport = \Swift_MailTransport::newInstance();
-
-        // Create the Mailer using your created Transport
-        $mailer = \Swift_Mailer::newInstance($transport);
-
-        // Create a message
-        $message = \Swift_Message::newInstance($subject)
-            ->setFrom(array($from_email => $from_name))
-            ->setTo(array($to_email => $to_name))
-            ->setBody($template);
-
-        // Send the message
-        return $mailer->send($message);
+        return $this->getObject($identifier)->layout($this->getConfig()->template)->format($format)->render($context);
     }
 }

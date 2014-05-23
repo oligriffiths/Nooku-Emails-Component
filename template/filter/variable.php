@@ -8,6 +8,7 @@ class TemplateFilterVariable extends Library\TemplateFilterAbstract implements L
 {
     protected $_data;
 
+
     /**
      * Parse the text and render it
      *
@@ -16,12 +17,15 @@ class TemplateFilterVariable extends Library\TemplateFilterAbstract implements L
      */
     public function render(&$text)
     {
-        //Replace occurances of [XXX] with $this->getTemplate()->getView()->getData()[XXX]
-        $text = preg_replace_callback('#\[([A-Z_\-0-9]+)\]#s', array($this, '_replaceData'), $text);
+        //Replace occurances of {{XXX}} with $this->getTemplate()->getView()->getData()[XXX]
+        $text = preg_replace_callback('#\{\{([A-Z_\-0-9]+)\}\}#s', array($this, '_replaceData'), $text);
     }
 
 
-
+    /**
+     * Returns the view data with all keys returned in uppcase and arrays imploded
+     * @return null
+     */
     protected function _getViewData()
     {
         if($this->_data === null)
@@ -37,7 +41,12 @@ class TemplateFilterVariable extends Library\TemplateFilterAbstract implements L
     }
 
 
-
+    /**
+     * Replacement function for the regex callback
+     *
+     * @param $match
+     * @return mixed
+     */
     protected function _replaceData($match)
     {
         $var = $match[1];
