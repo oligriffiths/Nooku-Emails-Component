@@ -5,6 +5,6 @@
     "keywords": ["nooku", "emails", "component"],
     "license": "GPL",
     "require": {
-        "nooku/component-installer-plugin": "dev-master@dev"
+        "nooku/component-installer-plugin": "*"
     }
 }
