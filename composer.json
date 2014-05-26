@@ -1,5 +1,6 @@
 {
     "name": "nooku/component-emails",
+    "description": "An emails component for the Nooku framework",
     "type": "nooku-component",
     "require": {
         "nooku/component-installer-plugin": "*"
