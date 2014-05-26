@@ -1,0 +1,7 @@
+{
+    "name": "nooku/component-emails",
+    "type": "nooku-component",
+    "require": {
+        "nooku/component-installer-plugin": "*"
+    }
+}
