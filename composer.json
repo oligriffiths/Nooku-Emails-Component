@@ -2,6 +2,9 @@
     "name": "nooku/component-emails",
     "description": "An emails component for the Nooku framework",
     "type": "nooku-component",
+    "keywords": ["nooku", "emails", "component"],
+    "homepage": "https://github.com/oligriffiths/com_emails",
+    "license": "GPL",
     "require": {
         "nooku/component-installer-plugin": "*"
     }
