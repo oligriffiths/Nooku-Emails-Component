@@ -7,6 +7,6 @@
     "require": {
         "nooku/component-installer-plugin": "*",
         "swiftmailer/swiftmailer": "5.0.*",
-        "pelago/emogrifier": "dev-task/php-5.6"
+        "pelago/emogrifier": "dev-master"
     }
 }
