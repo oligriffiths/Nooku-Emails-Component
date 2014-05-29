@@ -3,6 +3,7 @@
     "description": "An emails component for the Nooku framework",
     "keywords": ["nooku", "emails", "component"],
     "license": "GPL",
+    "target-dir": "oligriffiths/emails",
     "require": {
         "swiftmailer/swiftmailer": "5.0.*",
         "pelago/emogrifier": "dev-master@dev"
