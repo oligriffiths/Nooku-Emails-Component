@@ -1,11 +1,9 @@
 {
-    "name": "nooku/component-emails",
+    "name": "oligriffiths/emails-component",
     "description": "An emails component for the Nooku framework",
-    "type": "nooku-component",
     "keywords": ["nooku", "emails", "component"],
     "license": "GPL",
     "require": {
-        "nooku/component-installer-plugin": "*",
         "swiftmailer/swiftmailer": "5.0.*",
         "pelago/emogrifier": "dev-master"
     }
