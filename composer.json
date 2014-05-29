@@ -7,5 +7,8 @@
     "require": {
         "oligriffiths/installer": ">=0.0.1",
         "swiftmailer/swiftmailer": "5.0.*"
+    },
+    "autoload": {
+        "files": ["autoload.php"]
     }
 }
