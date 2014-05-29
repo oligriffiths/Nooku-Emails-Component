@@ -1,9 +1,9 @@
 {
     "name": "oligriffiths/emails-component",
     "description": "An emails component for the Nooku framework",
+    "type": "nooku-component",
     "keywords": ["nooku", "emails", "component"],
     "license": "GPL",
-    "target-dir": "oligriffiths/emails",
     "require": {
         "swiftmailer/swiftmailer": "5.0.*"
     }
