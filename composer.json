@@ -5,6 +5,7 @@
     "keywords": ["nooku", "emails", "component"],
     "license": "GPL",
     "require": {
+        "oligriffiths/installer": "dev-master",
         "swiftmailer/swiftmailer": "5.0.*"
     }
 }
