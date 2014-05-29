@@ -5,7 +5,6 @@
     "license": "GPL",
     "target-dir": "oligriffiths/emails",
     "require": {
-        "swiftmailer/swiftmailer": "5.0.*",
-        "pelago/emogrifier": "dev-master@dev"
+        "swiftmailer/swiftmailer": "5.0.*"
     }
 }
