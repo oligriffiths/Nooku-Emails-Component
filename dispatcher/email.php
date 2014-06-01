@@ -24,7 +24,7 @@ class DispatcherEmail extends Library\DispatcherAbstract
             'email' => 'default',
             'content' => null,
             'from_email' => $app->getCfg('mailfrom'),
-            'from_name' => $app->getCfg('mailname'),
+            'from_name' => $app->getCfg('fromname'),
             'mailer' => $app->getCfg('mailer'),
             'sendmail' => $app->getCfg('sendmail'),
             'smtp_auth' => $app->getCfg('smtpauth'),
@@ -32,6 +32,7 @@ class DispatcherEmail extends Library\DispatcherAbstract
             'smtp_pass' => $app->getCfg('smtppass'),
             'smtp_host' => $app->getCfg('smtphost'),
             'smtp_port' => $app->getCfg('smtpport'),
+            'smtp_security' => $app->getCfg('smtpsecure'),
         ));
 
         parent::_initialize($config);
@@ -48,6 +49,7 @@ class DispatcherEmail extends Library\DispatcherAbstract
     protected function _actionSend(Library\ControllerContextInterface $context)
     {
         //Fetch request data
+        $context->request = clone $context->getRequest();
         $request_data = $context->getRequest()->getData();
 
         //Validate from email
@@ -90,13 +92,17 @@ class DispatcherEmail extends Library\DispatcherAbstract
         switch($this->getConfig()->mailer)
         {
             case 'smtp':
-                $transport = \Swift_MailTransport::newInstance($this->getConfig()->smtp_host, $this->getConfig()->smtp_port)
+                $transport = \Swift_SmtpTransport::newInstance(
+                    $this->getConfig()->smtp_host,
+                    $this->getConfig()->smtp_port,
+                    $this->getConfig()->smtp_security
+                )
                 ->setUsername($this->getConfig()->smtp_user)
                 ->setPassword($this->getConfig()->smtp_pass);
                 break;
 
             case 'sendmail':
-                $transport = \Swift_MailTransport::newInstance($this->getConfig()->sendmail);
+                $transport = \Swift_SendmailTransport::newInstance($this->getConfig()->sendmail);
                 break;
 
             case 'mail':
