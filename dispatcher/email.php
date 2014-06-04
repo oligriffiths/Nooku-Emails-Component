@@ -33,6 +33,7 @@ class DispatcherEmail extends Library\DispatcherAbstract
             'smtp_host' => $app->getCfg('smtphost'),
             'smtp_port' => $app->getCfg('smtpport'),
             'smtp_security' => $app->getCfg('smtpsecure'),
+            'attachments' => null
         ));
 
         parent::_initialize($config);
@@ -120,6 +121,18 @@ class DispatcherEmail extends Library\DispatcherAbstract
             ->setTo(array($to_email => $to_name))
             ->setBody($context->text)
             ->addPart($context->html, 'text/html');
+
+        // Add attachments
+        if ($attachments = $request_data->get('attachments', 'raw')) {
+
+            foreach ($attachments as $filename => $path) {
+
+                $attachment = \Swift_Attachment::fromPath($path);
+                if (is_string($filename)) $attachment->setFilename($filename);
+
+                $message->attach($attachment);
+            }
+        }
 
         // Send the message
         return $mailer->send($message);
