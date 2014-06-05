@@ -1,0 +1,14 @@
+{
+    "name": "oligriffiths/emails-component",
+    "description": "An emails component for the Nooku framework",
+    "type": "nooku-component",
+    "keywords": ["nooku", "emails", "component"],
+    "license": "GPL",
+    "require": {
+        "oligriffiths/installer": ">=0.0.1",
+        "swiftmailer/swiftmailer": "5.0.*"
+    },
+    "autoload": {
+        "files": ["autoload.php"]
+    }
+}
