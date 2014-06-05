@@ -123,11 +123,13 @@ class DispatcherEmail extends Library\DispatcherAbstract
             ->addPart($context->html, 'text/html');
 
         // Add attachments
-        if ($attachments = $request_data->get('attachments', 'raw')) {
+        if ($attachments = $this->getConfig()->get('attachments', 'raw')) {
 
-            foreach ($attachments as $filename => $path) {
+            foreach ($attachments as $filename => $body) {
 
-                $attachment = \Swift_Attachment::fromPath($path);
+                if (!$body) continue;
+
+                $attachment = \Swift_Attachment::newInstance($body);
                 if (is_string($filename)) $attachment->setFilename($filename);
 
                 $message->attach($attachment);
