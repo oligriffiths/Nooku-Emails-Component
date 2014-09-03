@@ -8,6 +8,7 @@
         "nooku/installer": "dev-develop",
         "swiftmailer/swiftmailer": "5.0.*"
     },
+    "minimum-stability": "dev",
     "autoload": {
         "files": ["autoload.php"]
     }
