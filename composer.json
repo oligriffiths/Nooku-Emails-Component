@@ -5,7 +5,7 @@
     "keywords": ["nooku", "emails", "component"],
     "license": "GPL",
     "require": {
-        "nooku/installer": "dev-develop",
+        "nooku/installer": "dev-develop#dc92956",
         "swiftmailer/swiftmailer": "5.0.*"
     },
     "minimum-stability": "dev",
