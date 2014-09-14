@@ -1,6 +1,6 @@
 <?php
 
-namespace Nooku\Component\Emails;
+namespace Oligriffiths\Component\Emails;
 
 use Nooku\Library;
 
