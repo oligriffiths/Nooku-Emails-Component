@@ -1,5 +1,5 @@
 {
-    "name": "oligriffiths/nooku-emails-component",
+    "name": "oligriffiths/emails-component",
     "description": "An emails component for the Nooku framework",
     "type": "nooku-component",
     "keywords": ["nooku", "emails", "component"],
