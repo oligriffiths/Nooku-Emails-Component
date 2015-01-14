@@ -17,7 +17,7 @@ class ControllerEmail extends Library\ControllerView
     protected function _initialize(Library\ObjectConfig $config)
     {
         $config->append(array(
-            'formats'   => array('text'),
+            'formats'   => array('txt'),
         ));
 
         parent::_initialize($config);

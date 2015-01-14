@@ -1,0 +1,1 @@
+This is the default email layout, please supply a 'content' property or 'content_txt' property when calling ->send(array('content' => '...')).

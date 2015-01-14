@@ -1,1 +1,1 @@
-This is the default email, override in your component or base template
+This is the default email layout, please supply a 'content' property or 'content_html' property when calling ->send(array('content' => '...')).

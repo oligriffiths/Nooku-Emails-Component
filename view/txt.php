@@ -4,7 +4,7 @@ namespace Oligriffiths\Component\Emails;
 
 use Nooku\Library;
 
-class ViewText extends Library\ViewHtml
+class ViewTxt extends Library\ViewHtml
 {
     protected function _initialize(Library\ObjectConfig $config)
     {

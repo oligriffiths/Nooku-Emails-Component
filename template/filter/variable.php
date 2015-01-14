@@ -4,7 +4,7 @@ namespace Oligriffiths\Component\Emails;
 
 use Nooku\Library;
 
-class TemplateFilterVariable extends Library\TemplateFilterAbstract implements Library\TemplateFilterRenderer
+class TemplateFilterVariable extends Library\TemplateFilterAbstract
 {
     protected $_data;
 
@@ -15,9 +15,12 @@ class TemplateFilterVariable extends Library\TemplateFilterAbstract implements L
      * @param string $text  The text to parse
      * @return void
      */
-    public function render(&$text)
+    public function filter(&$text)
     {
-        //Replace occurances of {{XXX}} with $this->getTemplate()->getView()->getData()[XXX]
+        //Replace occurrences of {{XXX}} with $this->getTemplate()->getData()[XXX]
+        $text = preg_replace_callback('#\{\{([A-Z_\-0-9]+)\}\}#s', array($this, '_replaceData'), $text);
+
+        //We do this twice so that any variables with variables inside them are replaced
         $text = preg_replace_callback('#\{\{([A-Z_\-0-9]+)\}\}#s', array($this, '_replaceData'), $text);
     }
 
@@ -30,7 +33,9 @@ class TemplateFilterVariable extends Library\TemplateFilterAbstract implements L
     {
         if($this->_data === null)
         {
-            $data = $this->getTemplate()->getView()->getData();
+            $data = $this->getTemplate()->getData();
+
+            $this->_data = array();
 
             foreach($data AS $key => $value){
                 $this->_data[strtoupper($key)] = is_array($value) ? implode(',', $value) : $value;

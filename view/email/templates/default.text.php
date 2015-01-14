@@ -1,1 +1,0 @@
-This is the default email, override in your component or base template
