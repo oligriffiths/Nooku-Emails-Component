@@ -42,6 +42,8 @@ class DispatcherEmail extends Library\DispatcherAbstract
             'template' => 'default',
             'layout' => 'default',
             'content' => null,
+            'content_txt' => null,
+            'content_html' => null,
             'from_email' => $app->getConfig()->mailfrom,
             'from_name' => $app->getConfig()->fromname,
             'mailer' => $app->getConfig()->mailer,
@@ -77,8 +79,6 @@ class DispatcherEmail extends Library\DispatcherAbstract
         if(!$data->recipients && $data->recipient_email){
             $data->recipients = array($data->recipient_email => $data->recipient_name ?: $data->recipient_email);
         }
-
-        $context->param = $data;
     }
 
 
@@ -112,10 +112,6 @@ class DispatcherEmail extends Library\DispatcherAbstract
             throw new \InvalidArgumentException('At least 1 recipient must be supplied');
         }
 
-        //Set default recipient email
-        $data->recipient_email = key($recipients);
-        $data->recipient_name = current($recipients);
-
         //Validate recipients
         foreach($data->recipients AS $email => $name){
 
@@ -124,6 +120,10 @@ class DispatcherEmail extends Library\DispatcherAbstract
                 throw new \InvalidArgumentException('Recipient email is not a valid email address');
             }
         }
+
+        //Set default recipient email
+        $data->recipient_email = key($recipients);
+        $data->recipient_name = current($recipients);
 
         //Validate subject
         if(!$subject = $data->subject){
@@ -198,26 +198,20 @@ class DispatcherEmail extends Library\DispatcherAbstract
         //Get the format
         $format = strtolower($context->getRequest()->getFormat());
 
-        //Get the email layout
-        $layout = $data->layout;
-
-        //Construct email controller identifier
-        $identifier = $this->getIdentifier()->toArray();
-        $identifier['path'] = array('controller');
-        $identifier['name'] = 'email';
-
         //Get format specific content, fallback to non-format specific and render blank layout
-        $content_format = $data->get('content_'.$format);
+        $content_format = $data->get('content_'.$format) ?: $this->getConfig()->get('content_'.$format);
         $content = $data->get('content') ?: $this->getConfig()->content;
         if($content_format || $content){
             $data->content = $content_format ?: ($format == 'html' ? nl2br($content) : $content);
-            $layout = 'blank';
         }
 
         //Render the email template
-        $context->param->email_content = $data->content ?: $this->getObject($identifier)->layout($layout)->format($format)->render($data);
+        $data->email_content = $data->content ?: $this->getController()->layout($data->layout)->format($format)->render($data);
 
-        //Render the template view
+        //Construct template controller identifier
+        $identifier = $this->getIdentifier()->toArray();
+        $identifier['path'] = array('controller');
+        $identifier['name'] = 'email';
         $identifier['name'] = 'template';
         return $this->getObject($identifier)->layout($this->getConfig()->template)->format($format)->render($data);
     }
